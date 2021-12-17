@@ -9,6 +9,87 @@ import javax.swing.JOptionPane;
 public class Principal extends javax.swing.JFrame implements Runnable {
 
     ArrayList<Carro> listaCarros = new ArrayList();
+    Jugador jak = new Jugador("Jak", 5000, 5000);
+    Jugador ce = new Jugador("Ciber Errol", 500, 25000);
+    Malvado automal = new Malvado(100, 0, 0, "Auto del Mal", 100);
+    Carro autojak = new Carro();
+    
+    Thread hilo = new Thread(this);
+    boolean continua = true;
+    boolean vivo = true;
+    boolean pausa = false;
+    int ronda = 0;
+    int turno = 0;
+    int ataquemal = 0;
+    int ataquejak = 0;
+    
+    public void run(){
+        continua = true;
+        vivo = true;
+        ronda = 0;
+        turno = 0;
+        while(vivo){
+            if(ronda == 0){
+                barra_jak.setMaximum(autojak.getVida());
+                barra_jak.setValue(autojak.getVida());
+                barra_ciber.setMaximum(automal.getVida());
+                barra_ciber.setValue(automal.getVida());
+                estado.setText(autojak.getNombre() + " vs " + automal.getNombre());
+                resultado.setText("Combatiendo...");
+                ataquejak = autojak.getAtaque();
+                text_ataquejak.setText("" + ataquejak);
+                ataquemal = automal.getAtaque();
+                text_ataquece.setText("" + ataquemal);
+            }
+            if(ronda == 1){
+                barra_jak.setMaximum(jak.getVida());
+                barra_jak.setValue(jak.getVida());
+                barra_ciber.setMaximum(ce.getVida());
+                barra_ciber.setValue(ce.getVida());
+                estado.setText(jak.getNombre() + " vs " + ce.getNombre());
+                resultado.setText("El carro de jak gano. Combatiendo...");
+                ataquejak = jak.getAtaque();
+                text_ataquejak.setText("" + ataquejak);
+                ataquemal = ce.getAtaque();
+                text_ataquece.setText("" + ataquemal);
+                continua = true;
+            }
+            while(continua){
+                try{
+                    if(!pausa){
+                        turno++;
+                        barra_jak.setValue(barra_jak.getValue() - ataquemal);
+                        text_vidajak.setText("" + barra_jak.getValue());
+                        if(turno == 2){
+                           turno = 0;
+                           barra_ciber.setValue(barra_ciber.getValue() - ataquejak);
+                           text_vidace.setText("" + barra_ciber.getValue());
+                        }
+                    }
+                    if(barra_ciber.getValue() <= 0){
+                        continua = false;
+                        ronda++;
+                        if(ronda == 1){
+                            JOptionPane.showMessageDialog(this, "Jak ha derrotado al auto Ciber Errol. Que pro.");
+                        }
+                        else{
+                            JOptionPane.showMessageDialog(this, "Jak ha derrotado a Ciber Errol. Es un heroe.");
+                            resultado.setText("Jak heroe");
+                        }
+                    }
+                    else if(barra_jak.getValue() <= 0){
+                        vivo = false;
+                        continua = false;
+                        JOptionPane.showMessageDialog(this, "Jak ha muerto");
+                        resultado.setText("Jak ha muerto");
+                    }
+                    Thread.sleep(500);
+                }catch(Exception e){
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
     
     public Principal() {
         initComponents();
@@ -32,18 +113,22 @@ public class Principal extends javax.swing.JFrame implements Runnable {
         jPanel1 = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
         arbol_carros = new javax.swing.JTree();
-        jProgressBar1 = new javax.swing.JProgressBar();
-        jProgressBar2 = new javax.swing.JProgressBar();
+        barra_jak = new javax.swing.JProgressBar();
+        barra_ciber = new javax.swing.JProgressBar();
         jLabel9 = new javax.swing.JLabel();
         jLabel10 = new javax.swing.JLabel();
-        jLabel11 = new javax.swing.JLabel();
-        jLabel12 = new javax.swing.JLabel();
+        text_ataquejak = new javax.swing.JLabel();
+        text_vidajak = new javax.swing.JLabel();
         jLabel13 = new javax.swing.JLabel();
         jLabel14 = new javax.swing.JLabel();
-        jLabel15 = new javax.swing.JLabel();
-        jLabel16 = new javax.swing.JLabel();
-        jLabel17 = new javax.swing.JLabel();
-        jLabel18 = new javax.swing.JLabel();
+        text_vidace = new javax.swing.JLabel();
+        text_ataquece = new javax.swing.JLabel();
+        estado = new javax.swing.JLabel();
+        resultado = new javax.swing.JLabel();
+        jButton3 = new javax.swing.JButton();
+        jButton4 = new javax.swing.JButton();
+        jLabel11 = new javax.swing.JLabel();
+        jLabel12 = new javax.swing.JLabel();
         jPanel2 = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
         text_nombre = new javax.swing.JTextField();
@@ -70,100 +155,137 @@ public class Principal extends javax.swing.JFrame implements Runnable {
         arbol_carros.setModel(new javax.swing.tree.DefaultTreeModel(treeNode1));
         jScrollPane1.setViewportView(arbol_carros);
 
+        barra_jak.setForeground(new java.awt.Color(0, 255, 51));
+
+        barra_ciber.setForeground(new java.awt.Color(255, 51, 51));
+
         jLabel9.setText("Ataque Jak");
 
         jLabel10.setText("Vida Jak");
 
-        jLabel11.setText("______");
+        text_ataquejak.setText("______");
 
-        jLabel12.setText("______");
+        text_vidajak.setText("______");
 
         jLabel13.setText("Ataque Ciber Errot");
 
-        jLabel14.setText("Vida Ciber Errot");
+        jLabel14.setText("Vida Ciber Errol");
 
-        jLabel15.setText("______");
+        text_vidace.setText("______");
 
-        jLabel16.setText("______");
+        text_ataquece.setText("______");
 
-        jLabel17.setText("______");
+        estado.setText("______");
 
-        jLabel18.setText("______");
+        resultado.setText("______");
+
+        jButton3.setText("Iniciar");
+        jButton3.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jButton3MouseClicked(evt);
+            }
+        });
+
+        jButton4.setText("Pausar");
+        jButton4.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jButton4MouseClicked(evt);
+            }
+        });
+
+        jLabel11.setText("Jak");
+
+        jLabel12.setText("Ciber Errol");
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 104, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jProgressBar1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jProgressBar2, javax.swing.GroupLayout.DEFAULT_SIZE, 230, Short.MAX_VALUE))
-                .addContainerGap())
-            .addGroup(jPanel1Layout.createSequentialGroup()
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
                 .addGap(19, 19, 19)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addComponent(jLabel9)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jLabel11, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(text_ataquejak, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addComponent(jLabel10)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jLabel12, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addComponent(text_vidajak, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addComponent(jLabel13)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jLabel16, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(text_ataquece, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addComponent(jLabel14)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jLabel15, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addComponent(text_vidace, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addGap(65, 65, 65))
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel18, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel17, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 104, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(barra_jak, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(barra_ciber, javax.swing.GroupLayout.DEFAULT_SIZE, 230, Short.MAX_VALUE)
+                            .addComponent(jButton3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(jButton4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(jLabel11, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(jLabel12, javax.swing.GroupLayout.PREFERRED_SIZE, 110, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addGap(0, 0, Short.MAX_VALUE))))
+                    .addComponent(estado, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap())
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(resultado, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap())
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addGap(21, 21, 21)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 193, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGap(16, 16, 16)
-                        .addComponent(jProgressBar1, javax.swing.GroupLayout.PREFERRED_SIZE, 48, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(36, 36, 36)
-                        .addComponent(jProgressBar2, javax.swing.GroupLayout.PREFERRED_SIZE, 48, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 193, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(26, 26, 26)
+                        .addComponent(jLabel11)
+                        .addGap(2, 2, 2)
+                        .addComponent(barra_jak, javax.swing.GroupLayout.PREFERRED_SIZE, 48, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(4, 4, 4)
+                        .addComponent(jLabel12)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(barra_ciber, javax.swing.GroupLayout.PREFERRED_SIZE, 48, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(jButton3)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jButton4)))
+                .addGap(19, 19, 19)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(jLabel9)
-                            .addComponent(jLabel11))
+                            .addComponent(text_ataquejak))
                         .addGap(33, 33, 33)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(jLabel10)
-                            .addComponent(jLabel12)))
+                            .addComponent(text_vidajak)))
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(jLabel13)
-                            .addComponent(jLabel16))
+                            .addComponent(text_ataquece))
                         .addGap(33, 33, 33)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(jLabel14)
-                            .addComponent(jLabel15))))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 35, Short.MAX_VALUE)
-                .addComponent(jLabel17)
+                            .addComponent(text_vidace))))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 29, Short.MAX_VALUE)
+                .addComponent(estado)
                 .addGap(18, 18, 18)
-                .addComponent(jLabel18)
+                .addComponent(resultado)
                 .addContainerGap())
         );
 
@@ -393,6 +515,23 @@ public class Principal extends javax.swing.JFrame implements Runnable {
         }
     }//GEN-LAST:event_jButton2MouseClicked
 
+    private void jButton3MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton3MouseClicked
+        hilo = new Thread(this);
+        Object v1 = arbol_carros.getSelectionPath().getLastPathComponent();
+        DefaultMutableTreeNode nodo_selec = (DefaultMutableTreeNode)v1;
+        autojak = (Carro)nodo_selec.getUserObject();
+        hilo.start(); 
+    }//GEN-LAST:event_jButton3MouseClicked
+
+    private void jButton4MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton4MouseClicked
+        if(pausa == false){
+            pausa = true;
+        }
+        else{
+            pausa = false;
+        }
+    }//GEN-LAST:event_jButton4MouseClicked
+
     /**
      * @param args the command line arguments
      */
@@ -449,20 +588,21 @@ public class Principal extends javax.swing.JFrame implements Runnable {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JTree arbol_carros;
+    private javax.swing.JProgressBar barra_ciber;
+    private javax.swing.JProgressBar barra_jak;
     private javax.swing.JComboBox<String> cb_carros;
     private javax.swing.JComboBox<String> cb_tipos;
+    private javax.swing.JLabel estado;
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
+    private javax.swing.JButton jButton3;
+    private javax.swing.JButton jButton4;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel11;
     private javax.swing.JLabel jLabel12;
     private javax.swing.JLabel jLabel13;
     private javax.swing.JLabel jLabel14;
-    private javax.swing.JLabel jLabel15;
-    private javax.swing.JLabel jLabel16;
-    private javax.swing.JLabel jLabel17;
-    private javax.swing.JLabel jLabel18;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
@@ -473,14 +613,17 @@ public class Principal extends javax.swing.JFrame implements Runnable {
     private javax.swing.JLabel jLabel9;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
-    private javax.swing.JProgressBar jProgressBar1;
-    private javax.swing.JProgressBar jProgressBar2;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTabbedPane jTabbedPane1;
+    private javax.swing.JLabel resultado;
     private javax.swing.JFormattedTextField text_ataque;
+    private javax.swing.JLabel text_ataquece;
+    private javax.swing.JLabel text_ataquejak;
     private javax.swing.JFormattedTextField text_derrape;
     private javax.swing.JTextField text_nombre;
     private javax.swing.JFormattedTextField text_velocidad;
     private javax.swing.JFormattedTextField text_vida;
+    private javax.swing.JLabel text_vidace;
+    private javax.swing.JLabel text_vidajak;
     // End of variables declaration//GEN-END:variables
 }

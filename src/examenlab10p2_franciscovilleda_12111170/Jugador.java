@@ -4,12 +4,12 @@ package examenlab10p2_franciscovilleda_12111170;
 
 public class Jugador {
     private String nombre;
-    private int ataque, velocidad;
+    private int ataque, vida;
 
-    public Jugador(String nombre, int ataque, int velocidad) {
+    public Jugador(String nombre, int ataque, int vida) {
         this.nombre = nombre;
         this.ataque = ataque;
-        this.velocidad = velocidad;
+        this.vida = vida;
     }
 
     public Jugador() {
@@ -31,12 +31,12 @@ public class Jugador {
         this.ataque = ataque;
     }
 
-    public int getVelocidad() {
-        return velocidad;
+    public int getVida() {
+        return vida;
     }
 
-    public void setVelocidad(int velocidad) {
-        this.velocidad = velocidad;
+    public void setVida(int vida) {
+        this.vida = vida;
     }
 
     @Override
