@@ -2,9 +2,11 @@
 package examenlab10p2_franciscovilleda_12111170;
 import java.util.ArrayList;
 import javax.swing.DefaultComboBoxModel;
+import javax.swing.tree.DefaultTreeModel;
+import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.JOptionPane;
 
-public class Principal extends javax.swing.JFrame {
+public class Principal extends javax.swing.JFrame implements Runnable {
 
     ArrayList<Carro> listaCarros = new ArrayList();
     
@@ -14,6 +16,7 @@ public class Principal extends javax.swing.JFrame {
         ac.cargarArchivo();
         listaCarros = ac.getListaCarros();
         cargarCombobox();
+        cargarArbol();
     }
 
     /**
@@ -28,7 +31,7 @@ public class Principal extends javax.swing.JFrame {
         jTabbedPane1 = new javax.swing.JTabbedPane();
         jPanel1 = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
-        jTree1 = new javax.swing.JTree();
+        arbol_carros = new javax.swing.JTree();
         jProgressBar1 = new javax.swing.JProgressBar();
         jProgressBar2 = new javax.swing.JProgressBar();
         jLabel9 = new javax.swing.JLabel();
@@ -64,8 +67,8 @@ public class Principal extends javax.swing.JFrame {
         setTitle("JACK 3");
 
         javax.swing.tree.DefaultMutableTreeNode treeNode1 = new javax.swing.tree.DefaultMutableTreeNode("Carros");
-        jTree1.setModel(new javax.swing.tree.DefaultTreeModel(treeNode1));
-        jScrollPane1.setViewportView(jTree1);
+        arbol_carros.setModel(new javax.swing.tree.DefaultTreeModel(treeNode1));
+        jScrollPane1.setViewportView(arbol_carros);
 
         jLabel9.setText("Ataque Jak");
 
@@ -190,6 +193,11 @@ public class Principal extends javax.swing.JFrame {
         jLabel7.setText("Eliminar Carro");
 
         jButton2.setText("Eliminar");
+        jButton2.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jButton2MouseClicked(evt);
+            }
+        });
 
         text_vida.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter(new java.text.DecimalFormat("###"))));
 
@@ -357,17 +365,33 @@ public class Principal extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(rootPane, "Se ha ingresado el carro al sistema");
             ac.escribirArchivo();
             cargarCombobox();
+            cargarArbol();
             
         }catch(Exception e){
+            JOptionPane.showMessageDialog(rootPane, "Hubo un error al ingresar el carro al sistema");
             e.printStackTrace();
         }finally{
-            text_ataque.setText("");
-            text_vida.setText("");
-            text_velocidad.setText("");
+            text_ataque.setText(null);
+            text_vida.setText(null);
+            text_velocidad.setText(null);
             text_nombre.setText("");
-            text_derrape.setText("");
+            text_derrape.setText(null);
         }
     }//GEN-LAST:event_jButton1MouseClicked
+
+    private void jButton2MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton2MouseClicked
+        try{
+            adminCarros ac = new adminCarros("./Carros.cbm");
+            ac.cargarArchivo();
+            listaCarros = ac.getListaCarros();
+            listaCarros.remove(cb_carros.getSelectedIndex());
+            ac.escribirArchivo();
+            cargarCombobox();
+            cargarArbol();
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+    }//GEN-LAST:event_jButton2MouseClicked
 
     /**
      * @param args the command line arguments
@@ -411,8 +435,20 @@ public class Principal extends javax.swing.JFrame {
         }
         cb_carros.setModel(modelo);
     }
+    
+    public void cargarArbol(){
+        
+        DefaultTreeModel m = (DefaultTreeModel)arbol_carros.getModel();
+        m.setRoot(new DefaultMutableTreeNode("Carros"));
+        DefaultMutableTreeNode raiz = (DefaultMutableTreeNode) m.getRoot();
+        for (Carro c : listaCarros) {
+            DefaultMutableTreeNode nodo = new DefaultMutableTreeNode(c);
+            raiz.add(nodo);
+        }
+    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JTree arbol_carros;
     private javax.swing.JComboBox<String> cb_carros;
     private javax.swing.JComboBox<String> cb_tipos;
     private javax.swing.JButton jButton1;
@@ -441,7 +477,6 @@ public class Principal extends javax.swing.JFrame {
     private javax.swing.JProgressBar jProgressBar2;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTabbedPane jTabbedPane1;
-    private javax.swing.JTree jTree1;
     private javax.swing.JFormattedTextField text_ataque;
     private javax.swing.JFormattedTextField text_derrape;
     private javax.swing.JTextField text_nombre;
