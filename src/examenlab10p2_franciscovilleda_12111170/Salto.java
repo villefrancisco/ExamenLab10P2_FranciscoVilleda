@@ -24,5 +24,8 @@ public class Salto extends Carro{
         this.metros = metros;
     }
     
-    
+    @Override
+    public String toString() {
+        return super.toString();
+    }
 }

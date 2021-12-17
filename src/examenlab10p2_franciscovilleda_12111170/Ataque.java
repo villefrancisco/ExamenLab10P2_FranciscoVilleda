@@ -15,5 +15,8 @@ public class Ataque extends Carro{
         super.setAtaque((int)(ataque * porcentaje));
     }
     
-    
+    @Override
+    public String toString() {
+        return super.toString();
+    }
 }

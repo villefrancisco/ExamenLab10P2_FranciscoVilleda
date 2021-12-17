@@ -2,6 +2,7 @@
 package examenlab10p2_franciscovilleda_12111170;
 import java.util.ArrayList;
 import javax.swing.DefaultComboBoxModel;
+import javax.swing.JOptionPane;
 
 public class Principal extends javax.swing.JFrame {
 
@@ -12,6 +13,7 @@ public class Principal extends javax.swing.JFrame {
         adminCarros ac = new adminCarros("./Carros.cbm");
         ac.cargarArchivo();
         listaCarros = ac.getListaCarros();
+        cargarCombobox();
     }
 
     /**
@@ -189,13 +191,13 @@ public class Principal extends javax.swing.JFrame {
 
         jButton2.setText("Eliminar");
 
-        text_vida.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter()));
+        text_vida.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter(new java.text.DecimalFormat("###"))));
 
-        text_velocidad.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter()));
+        text_velocidad.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter(new java.text.DecimalFormat("###"))));
 
-        text_ataque.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter()));
+        text_ataque.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter(new java.text.DecimalFormat("####"))));
 
-        text_derrape.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter()));
+        text_derrape.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter(new java.text.DecimalFormat("####"))));
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
@@ -311,8 +313,12 @@ public class Principal extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButton1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton1MouseClicked
-        switch(cb_tipos.getSelectedIndex()){
-            case 1:{
+        try{
+            adminCarros ac = new adminCarros("./Carros.cbm");
+            ac.cargarArchivo();
+            listaCarros = ac.getListaCarros();
+            switch(cb_tipos.getSelectedIndex()){
+            case 0:{
                 listaCarros.add(new Carro(Integer.parseInt(text_velocidad.getText()),
                         Integer.parseInt(text_ataque.getText()),
                         Integer.parseInt(text_vida.getText()),
@@ -320,13 +326,46 @@ public class Principal extends javax.swing.JFrame {
                         Integer.parseInt(text_derrape.getText())));
             }break;
             
-            case 2:{
-                listaCarros.add(new Carro(Integer.parseInt(text_velocidad.getText()),
+            case 1:{
+                listaCarros.add(new Salto(Integer.parseInt(text_velocidad.getText()),
                         Integer.parseInt(text_ataque.getText()),
                         Integer.parseInt(text_vida.getText()),
                         text_nombre.getText(),
                         Integer.parseInt(text_derrape.getText())));
+            }break;
+            
+            case 2:{
+                listaCarros.add(new Belico(Integer.parseInt(text_velocidad.getText()),
+                        Integer.parseInt(text_ataque.getText()),
+                        Integer.parseInt(text_vida.getText()),
+                        text_nombre.getText(),
+                        Integer.parseInt(text_derrape.getText())));
+            }break;
+            
+            case 3:{
+                listaCarros.add(new Ataque(Integer.parseInt(text_velocidad.getText()),
+                        Integer.parseInt(text_ataque.getText()),
+                        Integer.parseInt(text_vida.getText()),
+                        text_nombre.getText(),
+                        Integer.parseInt(text_derrape.getText())));
+            }break;
+            
+            default:{
+                System.out.println("NO entro");
             }
+            }
+            JOptionPane.showMessageDialog(rootPane, "Se ha ingresado el carro al sistema");
+            ac.escribirArchivo();
+            cargarCombobox();
+            
+        }catch(Exception e){
+            e.printStackTrace();
+        }finally{
+            text_ataque.setText("");
+            text_vida.setText("");
+            text_velocidad.setText("");
+            text_nombre.setText("");
+            text_derrape.setText("");
         }
     }//GEN-LAST:event_jButton1MouseClicked
 

@@ -13,5 +13,11 @@ public class Belico extends Carro{
         double vidaExtra = (50 + rng.nextInt(100))/100;
         super.setVida((int)(vida * vidaExtra));
     }
+
+    @Override
+    public String toString() {
+        return super.toString();
+    }
+    
     
 }

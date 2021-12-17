@@ -1,10 +1,13 @@
 
 package examenlab10p2_franciscovilleda_12111170;
+import java.io.Serializable;
 
-public class Carro {
+public class Carro implements Serializable{
     private int velocidad, ataque, vida;
     private String nombre;
     private double derrape;
+    
+    private static final long SerialVersionUID=777L;
 
     public Carro() {
     }

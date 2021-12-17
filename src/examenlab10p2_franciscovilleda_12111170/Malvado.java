@@ -15,4 +15,8 @@ public class Malvado extends Carro{
         super.setAtaque(300 + rng.nextInt(400));
     }
     
+    @Override
+    public String toString() {
+        return super.toString();
+    }
 }
